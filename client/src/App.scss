@@ -1,0 +1,41 @@
+.main {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    border-color: aqua;
+    align-items: center;
+}
+.main__body {
+    display: flex;
+    width: 600px;
+    flex-direction: column;
+    display: flex;
+}
+.filters {
+    display: flex;
+    justify-content: center;
+    column-gap: 10px;
+    margin-bottom: 10px;
+    &__body {
+        padding: 0px 20px;
+        border-radius: 10px;
+        margin: 0 auto;
+    }
+    &__filter {
+        display: flex;
+        flex-direction: column;
+        row-gap: 10px;
+    }
+
+}
+.filter {
+    &__input {
+        border: 1px solid black;
+        border-radius: 4px;
+        padding: 1px 5px 1px 3px;
+    }
+}
+.table {
+    margin: 0 auto;
+    width: 400px;
+}

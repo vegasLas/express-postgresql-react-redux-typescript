@@ -2,14 +2,42 @@ import { InfoRestApi } from '../resApi/InfoRestApi';
 import { BaseThunkType, InferActionsTypies } from "./redux-store"
 
 // List types whitch we use
+export type ObjectInType = { id: number, date: string, name: string, amount: number, range: number }
+export type infoType = Array<Array<ObjectInType>>
 
-
+function flatArray(arr: Array<any>) {
+    var result = [] as Array<any>
+    arr.forEach(el => {
+        if (Array.isArray(el)) {
+            result = [...result, ...flatArray(el)]
+        } else {
+            result = [...result, el]
+        }
+    })
+    return result
+}
+function distributorObjectsInArray(arr: infoType) {
+    let result = [] as Array<any>
+    let count = 1
+    for (var i = 0; i < arr.length; i++) {
+        if (!(i % 10)) {
+            if (i !== 0) {
+                count++
+            }
+            result[count] = []
+        }
+        result[count].push(arr[i])
+    }
+    result.shift()
+    return result
+}
 const initialState = {
     info: [] as infoType,
     filterInputValue: "" as string,
     filterConditionValue: "equally" as string,
     filterColumnValue: "name" as string,
-    filteredInfo: [] as infoType 
+    filteredInfo: [] as infoType,
+    currentPage: 1 as number
 }
 export type initialStateType = typeof initialState
 const infoReducer = (state = initialState, action: ActionsType): initialStateType => {
@@ -17,19 +45,24 @@ const infoReducer = (state = initialState, action: ActionsType): initialStateTyp
         case "SET_INFO":
             return {
                 ...state,
-                info: Array.from(action.info)
+                info: distributorObjectsInArray(Array.from(action.info))
             }
         case "SET_FILTER_VALUE":
             return {
                 ...state,
                 ...action.payload
             }
+        case "SET_CURRENT_PAGE":
+            return {
+                ...state,
+                currentPage: action.pageNumber
+            }
         case "SET_FILTERED_INFO":
             let InfoCopy = [] as Array<any>;
             let { filterInputValue, filterConditionValue, filterColumnValue, info } = state
             if (filterInputValue) {
                 if (info.length > 1) {
-                    InfoCopy = Array.from(info)
+                    InfoCopy = flatArray(Array.from(info))
                     if (filterColumnValue === "name") {
                         if (Number(filterInputValue) === NaN && typeof Number(filterInputValue) !== "number") {
                             InfoCopy = []
@@ -55,14 +88,13 @@ const infoReducer = (state = initialState, action: ActionsType): initialStateTyp
             console.log(InfoCopy)
             return {
                 ...state,
-                filteredInfo: InfoCopy && [...InfoCopy]
+                filteredInfo: distributorObjectsInArray([...InfoCopy])
 
             }
         default:
             return state
     }
 }
-export type infoType = Array<{ id: number, date: string, name: string, amount: number, range: number }>
 export type ActionsType = InferActionsTypies<typeof actions>
 type ThunkType = BaseThunkType<ActionsType>
 export const actions = {
@@ -79,6 +111,12 @@ export const actions = {
     setFilterInfo: () => {
         return {
             type: "SET_FILTERED_INFO",
+        } as const
+    },
+    setCurrentPage: (pageNumber: number) => {
+        return {
+            type: "SET_CURRENT_PAGE",
+            pageNumber
         } as const
     },
 

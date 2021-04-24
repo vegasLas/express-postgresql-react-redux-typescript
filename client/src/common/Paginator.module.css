@@ -1,0 +1,14 @@
+.paginator {
+    margin: 10px;
+    text-align: center;
+}
+.pageNumber {
+    padding: 2px;
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.pageNumber.selectedPage {
+    font-weight: bold;
+    border-color: black;
+}

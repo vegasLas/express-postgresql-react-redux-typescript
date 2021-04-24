@@ -1,7 +1,7 @@
 import React from "react"
-import { infoType } from "../../redux/info-reducer"
+import { infoType, ObjectInType } from "../../redux/info-reducer"
 import moment from "moment"
-import { connect } from "react-redux"
+import Paginator from "../../common/Paginator"
 
 
 type propsType = {
@@ -11,7 +11,10 @@ type propsType = {
   filterColumnValue: string,
   setFilter: (e: any) => void,
   onChangeInput: (e: any) => void,
-  filteredInfo: infoType
+  filteredInfo: infoType,
+  setCurrentPage: (pageNumber: number) => void,
+  currentPage: number,
+
 }
 
 class Table extends React.PureComponent<propsType> {
@@ -20,7 +23,8 @@ class Table extends React.PureComponent<propsType> {
   }
 
   render() {
-    const { onChangeInput, filteredInfo, filterConditionValue, filterColumnValue, setFilter, filterInputValue, info } = this.props
+    const { currentPage, setCurrentPage, onChangeInput, filteredInfo, filterConditionValue, filterColumnValue, setFilter, filterInputValue, info } = this.props
+    let infoTable;
     const markUp = filterColumnValue === "name" ? <>
       <option value="equally">равно</option>
       <option value="contains">содержит</option>
@@ -30,12 +34,36 @@ class Table extends React.PureComponent<propsType> {
         <option value="more">больше</option>
         <option value="less">меньше</option>
       </> : null
-    const infoTable = info && (filterInputValue.length > 0 || filteredInfo.length > 0 ? filteredInfo : info).map((o) => <tr key={o.id} className="table__raw">
-      <th className="table__date">{moment(o.date).format('MMMM Do YYYY')}</th>
-      <th className="table__name">{o.name}</th>
-      <th className="table__count">{o.amount}</th>
-      <th className="table__range">{o.range}</th>
-    </tr>)
+    if (filterInputValue.length > 0 || filteredInfo.length > 0) {
+      if (!filteredInfo[currentPage - 1]) {
+        infoTable = filteredInfo.map(
+          (o: any) =>
+            <tr key={o.id} className="table__raw">
+              <th className="table__date">{moment(o.date).format('MMMM Do YYYY')}</th>
+              <th className="table__name">{o.name}</th>
+              <th className="table__count">{o.amount}</th>
+              <th className="table__range">{o.range}</th>
+            </tr>)
+      } else {
+        infoTable = filteredInfo[currentPage - 1].map(
+          (o: any) =>
+            <tr key={o.id} className="table__raw">
+              <th className="table__date">{moment(o.date).format('MMMM Do YYYY')}</th>
+              <th className="table__name">{o.name}</th>
+              <th className="table__count">{o.amount}</th>
+              <th className="table__range">{o.range}</th>
+            </tr>)
+      }
+    } else {
+      infoTable = info.length > 0 && info[currentPage - 1].map(
+        (o: any) =>
+          <tr key={o.id} className="table__raw">
+            <th className="table__date">{moment(o.date).format('MMMM Do YYYY')}</th>
+            <th className="table__name">{o.name}</th>
+            <th className="table__count">{o.amount}</th>
+            <th className="table__range">{o.range}</th>
+          </tr>)
+    }
     return (
       <main className="main">
         <section className="main__body">
@@ -80,6 +108,7 @@ class Table extends React.PureComponent<propsType> {
               {infoTable}
             </tbody>
           </table>
+          <Paginator pagesCount={filterInputValue.length > 0 || filteredInfo.length > 0 ? filteredInfo.length : info.length} currentPage={currentPage} setCurrentPage={setCurrentPage} />
         </section>
       </main >
     )

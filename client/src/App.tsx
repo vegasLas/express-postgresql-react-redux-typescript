@@ -1,7 +1,7 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import './App.scss';
-import TableContainer from './components/ListOfValute/TableContainer';
+import TableContainer from './components/Table/TableContainer';
 import store from './redux/redux-store';
 
 const App = () => {

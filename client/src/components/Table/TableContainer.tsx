@@ -16,13 +16,21 @@ class TableContainer extends React.PureComponent<PropsType> {
         this.props.getInfo()
     }
     async setFilter(e: any) {
-        await this.props.setFilterValue({ [e.target.name]: e.target.value })
-        this.props.setActualCondition(this.props.filterConditionValue, this.props.filterColumnValue)
         e.preventDefault()
+        await this.props.setFilterValue({ [e.target.name]: e.target.value })
+        // При изменении колонки мы также следим за условиями, чтобы они соответствовали своей колокнки 
+        this.props.setActualCondition(this.props.filterConditionValue, this.props.filterColumnValue)
     }
     async onChangeInput(e: any) {
+        e.preventDefault()
         await this.props.setFilterValue({ [e.target.name]: e.target.value })
         this.props.setFilterInfo()
+        // Здесь мы контролируем нашу открытую страничку, если допустим наш 
+        // currentPage 2, а наш массив даже  одну страницу заполняет.
+        // нам необходимо, задать первую страничку 
+        if (this.props.filteredInfo.length < 2) {
+            this.props.setCurrentPage(1)
+        }
     }
     render() {
         const { setCurrentPage, currentPage, filteredInfo, filterConditionValue, filterColumnValue, info, filterInputValue } = this.props

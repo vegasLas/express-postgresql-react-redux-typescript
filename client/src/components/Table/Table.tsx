@@ -1,8 +1,7 @@
 import React from "react"
-import { infoType, ObjectInType } from "../../redux/info-reducer"
-import moment from "moment"
+import { infoType } from "../../redux/info-reducer"
 import Paginator from "../../common/Paginator"
-
+import TableRaw from "./TableRaw";
 
 type propsType = {
   info: infoType,
@@ -14,14 +13,12 @@ type propsType = {
   filteredInfo: infoType,
   setCurrentPage: (pageNumber: number) => void,
   currentPage: number,
-
 }
 
 class Table extends React.PureComponent<propsType> {
   constructor(props: propsType) {
     super(props);
   }
-
   render() {
     const { currentPage, setCurrentPage, onChangeInput, filteredInfo, filterConditionValue, filterColumnValue, setFilter, filterInputValue, info } = this.props
     let infoTable;
@@ -37,32 +34,14 @@ class Table extends React.PureComponent<propsType> {
     if (filterInputValue.length > 0 || filteredInfo.length > 0) {
       if (!filteredInfo[currentPage - 1]) {
         infoTable = filteredInfo.map(
-          (o: any) =>
-            <tr key={o.id} className="table__raw">
-              <th className="table__date">{moment(o.date).format('MMMM Do YYYY')}</th>
-              <th className="table__name">{o.name}</th>
-              <th className="table__count">{o.amount}</th>
-              <th className="table__range">{o.range}</th>
-            </tr>)
+          (o: any) => <TableRaw key={o.id} object={o} />)
       } else {
         infoTable = filteredInfo[currentPage - 1].map(
-          (o: any) =>
-            <tr key={o.id} className="table__raw">
-              <th className="table__date">{moment(o.date).format('MMMM Do YYYY')}</th>
-              <th className="table__name">{o.name}</th>
-              <th className="table__count">{o.amount}</th>
-              <th className="table__range">{o.range}</th>
-            </tr>)
+          (o: any) => <TableRaw key={o.id} object={o} />)
       }
     } else {
       infoTable = info.length > 0 && info[currentPage - 1].map(
-        (o: any) =>
-          <tr key={o.id} className="table__raw">
-            <th className="table__date">{moment(o.date).format('MMMM Do YYYY')}</th>
-            <th className="table__name">{o.name}</th>
-            <th className="table__count">{o.amount}</th>
-            <th className="table__range">{o.range}</th>
-          </tr>)
+        (o: any) => <TableRaw key={o.id} object={o} />)
     }
     return (
       <main className="main">

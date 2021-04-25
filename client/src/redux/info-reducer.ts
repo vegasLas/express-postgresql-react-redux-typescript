@@ -5,9 +5,21 @@ import { BaseThunkType, InferActionsTypies } from "./redux-store"
 export type ObjectInType = { id: number, date: string, name: string, amount: number, range: number }
 export type infoType = Array<Array<ObjectInType>>
 
-function flatArray(arr: Array<any>) {
-    var result = [] as Array<any>
-    arr.forEach(el => {
+
+const initialState = {
+    info: [] as infoType,
+    filterInputValue: "" as string,
+    filterConditionValue: "equally" as string,
+    filterColumnValue: "name" as string,
+    filteredInfo: [] as infoType,
+    currentPage: 1 as number,
+    pageSize: 10 as number
+}
+// Разбиваем массивы в массиве, на их элементы
+// чтобы не было вложенности
+function flatArray(arr: ObjectInType[] | ObjectInType[][]) {
+    var result = [] as Array<ObjectInType>
+    arr.forEach((el: ObjectInType[] | ObjectInType) => {
         if (Array.isArray(el)) {
             result = [...result, ...flatArray(el)]
         } else {
@@ -16,11 +28,12 @@ function flatArray(arr: Array<any>) {
     })
     return result
 }
+// Компануем массив в зависимости от размера странички(числа злементов в нем)ж
 function distributorObjectsInArray(arr: infoType) {
     let result = [] as Array<any>
     let count = 1
     for (var i = 0; i < arr.length; i++) {
-        if (!(i % 10)) {
+        if (!(i % initialState.pageSize)) {
             if (i !== 0) {
                 count++
             }
@@ -31,14 +44,8 @@ function distributorObjectsInArray(arr: infoType) {
     result.shift()
     return result
 }
-const initialState = {
-    info: [] as infoType,
-    filterInputValue: "" as string,
-    filterConditionValue: "equally" as string,
-    filterColumnValue: "name" as string,
-    filteredInfo: [] as infoType,
-    currentPage: 1 as number
-}
+
+
 export type initialStateType = typeof initialState
 const infoReducer = (state = initialState, action: ActionsType): initialStateType => {
     switch (action.type) {
@@ -58,7 +65,7 @@ const infoReducer = (state = initialState, action: ActionsType): initialStateTyp
                 currentPage: action.pageNumber
             }
         case "SET_FILTERED_INFO":
-            let InfoCopy = [] as Array<any>;
+            let InfoCopy = [] as any[]; // 
             let { filterInputValue, filterConditionValue, filterColumnValue, info } = state
             if (filterInputValue) {
                 if (info.length > 1) {
@@ -85,7 +92,6 @@ const infoReducer = (state = initialState, action: ActionsType): initialStateTyp
                     }
                 }
             }
-            console.log(InfoCopy)
             return {
                 ...state,
                 filteredInfo: distributorObjectsInArray([...InfoCopy])
@@ -126,15 +132,15 @@ export const getInfo = (): ThunkType => async (dispatch) => {
     let data = await InfoRestApi.getInfo()
     dispatch(actions.setInfo(data));
 }
+
+// Следим за автоматическим изменением корректных условий, при изменнении колонки
 export const setActualCondition = (filterConditionValue: string, filterColumnValue: string): ThunkType => async (dispatch) => {
     if (filterColumnValue === "name" &&
         filterConditionValue === ("more" || "less")) {
-        console.log("То что мне нужно name")
         dispatch(actions.setFilterValue({ filterConditionValue: "contains" }))
     }
     else if (
         filterColumnValue === ("amount" || "range") && filterConditionValue === "contains") {
-        console.log("То что мне нужно amount range")
         dispatch(actions.setFilterValue({ filterConditionValue: "equally" }))
     }
 }

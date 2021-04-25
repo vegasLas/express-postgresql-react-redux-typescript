@@ -9,7 +9,6 @@ let Paginator: React.FC<PropsType> = ({ setCurrentPage, pagesCount, currentPage 
     for (let i = 1; i <= pagesCount; i++) {
         pages.push(i)
     }
-
     return <div className={classes.paginator}>
         {pages
             .map((p) => {

@@ -2,8 +2,8 @@ import { InfoRestApi } from '../resApi/InfoRestApi';
 import { BaseThunkType, InferActionsTypies } from "./redux-store"
 
 // List types whitch we use
-export type ObjectInType = { id: number, date: string, name: string, amount: number, range: number }
-export type infoType = Array<Array<ObjectInType>>
+export type ObjectInInfoType = { id: number, date: string, name: string, amount: number, range: number }
+export type infoType = Array<Array<ObjectInInfoType>>
 
 
 const initialState = {
@@ -17,9 +17,9 @@ const initialState = {
 }
 // Разбиваем массивы в массиве, на их элементы
 // чтобы не было вложенности
-function flatArray(arr: ObjectInType[] | ObjectInType[][]) {
-    var result = [] as Array<ObjectInType>
-    arr.forEach((el: ObjectInType[] | ObjectInType) => {
+function flatArray(arr: ObjectInInfoType[] | infoType) {
+    var result = [] as Array<ObjectInInfoType>
+    arr.forEach((el: ObjectInInfoType[] | ObjectInInfoType) => {
         if (Array.isArray(el)) {
             result = [...result, ...flatArray(el)]
         } else {
@@ -29,7 +29,7 @@ function flatArray(arr: ObjectInType[] | ObjectInType[][]) {
     return result
 }
 // Компануем массив в зависимости от размера странички(числа злементов в нем)ж
-function distributorObjectsInArray(arr: infoType) {
+function distributorObjectsInArray(arr: Array<any>) {
     let result = [] as Array<any>
     let count = 1
     for (var i = 0; i < arr.length; i++) {
@@ -105,7 +105,7 @@ export type ActionsType = InferActionsTypies<typeof actions>
 type ThunkType = BaseThunkType<ActionsType>
 export const actions = {
 
-    setInfo: (info: infoType) => {
+    setInfo: (info: Array<any>) => {
         return { type: "SET_INFO", info } as const
     },
     setFilterValue: (filterValues: Object) => {

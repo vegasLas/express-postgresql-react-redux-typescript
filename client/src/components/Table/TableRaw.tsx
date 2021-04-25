@@ -1,9 +1,9 @@
 import moment from "moment"
 import React from "react"
-import { ObjectInType } from "../../redux/info-reducer"
+import { ObjectInInfoType } from "../../redux/info-reducer"
 
 type TableRawPropsType = {
-    object: ObjectInType
+    object: ObjectInInfoType
 }
 const TableRaw: React.FC<TableRawPropsType> = ({ object }) => {
     const { date, name, amount, range } = object

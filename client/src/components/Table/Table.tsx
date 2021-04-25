@@ -22,6 +22,7 @@ class Table extends React.PureComponent<propsType> {
   render() {
     const { currentPage, setCurrentPage, onChangeInput, filteredInfo, filterConditionValue, filterColumnValue, setFilter, filterInputValue, info } = this.props
     let infoTable;
+    
     const markUp = filterColumnValue === "name" ? <>
       <option value="equally">равно</option>
       <option value="contains">содержит</option>
@@ -31,6 +32,7 @@ class Table extends React.PureComponent<propsType> {
         <option value="more">больше</option>
         <option value="less">меньше</option>
       </> : null
+
     if (filterInputValue.length > 0 || filteredInfo.length > 0) {
       if (!filteredInfo[currentPage - 1]) {
         infoTable = filteredInfo.map(

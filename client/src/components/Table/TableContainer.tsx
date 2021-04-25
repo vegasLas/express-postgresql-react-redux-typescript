@@ -15,13 +15,13 @@ class TableContainer extends React.PureComponent<PropsType> {
     componentDidMount() {
         this.props.getInfo()
     }
-    async setFilter(e: any) {
+    async setFilter(e: React.ChangeEvent<HTMLSelectElement>) {
         e.preventDefault()
         await this.props.setFilterValue({ [e.target.name]: e.target.value })
         // При изменении колонки мы также следим за условиями, чтобы они соответствовали своей колокнки 
         this.props.setActualCondition(this.props.filterConditionValue, this.props.filterColumnValue)
     }
-    async onChangeInput(e: any) {
+    async onChangeInput(e: React.ChangeEvent<HTMLInputElement>) {
         e.preventDefault()
         await this.props.setFilterValue({ [e.target.name]: e.target.value })
         this.props.setFilterInfo()
@@ -59,14 +59,14 @@ type MapStatePropsType = {
 }
 type MapDispatchPropsType = {
     getInfo: () => void,
-    setFilterValue: (filterValue: Object) => void,
+    setFilterValue: (filterValue: { filterInputValue?: string, filterColumnValue?: string, filterConditionValue?: string }) => void,
     setCurrentPage: (pageNumber: number) => void,
     setActualCondition: (filterConditionValue: string, filterColumnValue: string) => void,
     setFilterInfo: () => void
 
 }
 type OwnProps = {
-    setFilter: (e: any) => void
+    setFilter: (e: React.ChangeEvent<HTMLSelectElement>) => void
 }
 type PropsType = MapStatePropsType & MapDispatchPropsType
 let mapStateToProps = (state: AppReducersType): MapStatePropsType => ({

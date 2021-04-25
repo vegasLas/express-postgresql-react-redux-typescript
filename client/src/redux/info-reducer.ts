@@ -29,8 +29,8 @@ function flatArray(arr: ObjectInInfoType[] | infoType) {
     return result
 }
 // Компануем массив в зависимости от размера странички(числа злементов в нем)ж
-function distributorObjectsInArray(arr: Array<any>) {
-    let result = [] as Array<any>
+function distributorObjectsInArray(arr: ObjectInInfoType[]) {
+    let result = [] as infoType
     let count = 1
     for (var i = 0; i < arr.length; i++) {
         if (!(i % initialState.pageSize)) {
@@ -105,10 +105,10 @@ export type ActionsType = InferActionsTypies<typeof actions>
 type ThunkType = BaseThunkType<ActionsType>
 export const actions = {
 
-    setInfo: (info: Array<any>) => {
+    setInfo: (info: ObjectInInfoType[]) => {
         return { type: "SET_INFO", info } as const
     },
-    setFilterValue: (filterValues: Object) => {
+    setFilterValue: (filterValues: { filterInputValue?: string, filterColumnValue?: string, filterConditionValue?: string }) => {
         return {
             type: "SET_FILTER_VALUE",
             payload: { ...filterValues }

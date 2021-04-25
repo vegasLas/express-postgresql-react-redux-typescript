@@ -1,5 +1,5 @@
 import React from "react"
-import { infoType } from "../../redux/info-reducer"
+import { infoType, ObjectInInfoType } from "../../redux/info-reducer"
 import Paginator from "../../common/Paginator"
 import TableRaw from "./TableRaw";
 
@@ -8,11 +8,11 @@ type propsType = {
   filterInputValue: string,
   filterConditionValue: string,
   filterColumnValue: string,
-  setFilter: (e: any) => void,
-  onChangeInput: (e: any) => void,
-  filteredInfo: infoType,
-  setCurrentPage: (pageNumber: number) => void,
   currentPage: number,
+  filteredInfo: infoType
+  setCurrentPage: (pageNumber: number) => void,
+  setFilter: (e: React.ChangeEvent<HTMLSelectElement>) => void,
+  onChangeInput: (e: React.ChangeEvent<HTMLInputElement>) => void,
 }
 
 class Table extends React.PureComponent<propsType> {
@@ -20,9 +20,9 @@ class Table extends React.PureComponent<propsType> {
     super(props);
   }
   render() {
-    const { currentPage, setCurrentPage, onChangeInput, filteredInfo, filterConditionValue, filterColumnValue, setFilter, filterInputValue, info } = this.props
+    const { currentPage, filterInputValue, info, filteredInfo, filterConditionValue, filterColumnValue, setFilter, setCurrentPage, onChangeInput, } = this.props
     let infoTable;
-    
+
     const markUp = filterColumnValue === "name" ? <>
       <option value="equally">равно</option>
       <option value="contains">содержит</option>
@@ -35,15 +35,14 @@ class Table extends React.PureComponent<propsType> {
 
     if (filterInputValue.length > 0 || filteredInfo.length > 0) {
       if (!filteredInfo[currentPage - 1]) {
-        infoTable = filteredInfo.map(
-          (o: any) => <TableRaw key={o.id} object={o} />)
+        infoTable = null
       } else {
         infoTable = filteredInfo[currentPage - 1].map(
-          (o: any) => <TableRaw key={o.id} object={o} />)
+          (o: ObjectInInfoType) => <TableRaw key={o.id} object={o} />)
       }
     } else {
       infoTable = info.length > 0 && info[currentPage - 1].map(
-        (o: any) => <TableRaw key={o.id} object={o} />)
+        (o: ObjectInInfoType) => <TableRaw key={o.id} object={o} />)
     }
     return (
       <main className="main">
